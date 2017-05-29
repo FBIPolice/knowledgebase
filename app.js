@@ -3,6 +3,9 @@ const express = require('express')
 const path = require('path')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const expressValidator = require('express-validator')
+const flash = require('connect-flash')
+const session = require('express-session')
 
 // Init App
 const app = express()
@@ -25,11 +28,40 @@ db.on('error', (err) => {
 })
 
 // Body-parser Middleware
-// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
 app.use(bodyParser.json())
+
+// Express Session Middleware
+app.use(session({
+	secret: 'keyboard cat',
+	resave: true,
+	saveUninitialized: true,
+}))
+
+// Express Messsages Middleware
+app.use(require('connect-flash')())
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res)
+  next()
+})
+
+// Express Validator Middleware
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+      var namespace = param.split('.')
+      , root    = namespace.shift()
+      , formParam = root
+
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']'
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    }
+  }
+}))
 
 // Set public folder
 app.use(express.static(path.join(__dirname, 'public')))
@@ -50,67 +82,9 @@ app.get('/' , (req, res) => {
 	})
 })
 
-// Add article GET Route
-app.get('/article/add', (req, res) => {
-	res.render('add_article')
-})
-
-// Add article POST Route
-app.post('/articles/add', (req, res) => {
-	let article = new Article()
-	article.title = req.body.title
-	article.author = req.body.author
-	article.body = req.body.body
-	article.save((err) => {
-		if(err)
-			console.log(err)
-		else
-			res.redirect('/')
-	})
-})
-
-app.get('/article/edit/:id', (req, res) => {
-	Article.findById(req.params.id, (err, article) => {
-		if(err)
-			console.log(err)
-		else
-			res.render('edit_article', {article: article})
-	})
-})
-
-app.post('/article/edit/:id', (req, res) => {
-	let article = {}
-	article.title = req.body.title
-	article.author = req.body.author
-	article.body = req.body.body
-	let query = {_id: req.params.id}
-	Article.update(query, article, (err) => {
-		if(err)
-			console.log(err)
-		else
-			res.redirect('/')
-	})
-})
-
-// Single Article Route
-app.get('/article/:id', (req, res) => {
-	Article.findById(req.params.id, (err, article) => {
-		if(err)
-			console.log(err)
-		else
-			res.render('article', {article: article})
-	})
-})
-
-app.delete('/article/:id', (req, res) => {
-	let query = {_id: req.params.id}
-	Article.remove(query, (err) => {
-		if(err)
-			console.log(err)
-		else
-			res.send()
-	})
-})
+// Route Files
+let articles = require('./routes/articles')
+app.use('/article', articles)
 
 // Start server
 app.listen(3000, () => {
