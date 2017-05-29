@@ -1,0 +1,10 @@
+extends layout
+
+block content
+	h1 Articles
+	each article, i in articles
+		ul.list-group
+			li.list-group-item Title: 
+				a(href="/article/" + article._id) #{article.title}
+			li.list-group-item Author: #{article.author}
+			li.list-group-item Content: #{article.body}
