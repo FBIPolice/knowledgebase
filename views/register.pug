@@ -1,0 +1,22 @@
+extends layout
+
+block content
+	h1 Register
+	form(method='POST', action='/users/register')
+		#form-group
+			label(for='name') Name:
+			input.form-control(name="name", type="text", id="name")
+		#form-group
+			label(for='email') Email:
+			input.form-control(name="email", type="text", id="email")
+		#form-group
+			label(for='username') Username:
+			input.form-control(name="username", type="text", id="username")
+		#form-group
+			label(for='password') Password:
+			input.form-control(name="password", type="password", id="password")
+		#form-group
+			label(for='repeat_password') Repeat Password:
+			input.form-control(name="repeat_password", type="password", id="repeat_password")
+		br
+		input.btn.btn-primary(type="submit" value="Save")
