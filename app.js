@@ -9,8 +9,6 @@ const passport = require('passport')
 
 const dbConfig = require('./config/database')
 
-const test = "test"
-
 // Init App
 const app = express()
 
