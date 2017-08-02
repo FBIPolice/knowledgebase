@@ -18,7 +18,7 @@ router.post('/add', (req, res) => {
 
 	// Get Errors
 	let errors = req.validationErrors()
-	if(errors)
+	if (errors)
 		res.render('add_article', {
 			errors: errors
 		})
@@ -30,7 +30,7 @@ router.post('/add', (req, res) => {
 			article.body = req.body.body
 
 			article.save((err) => {
-				if(err)
+				if (err)
 					console.log(err)
 				else {
 					req.flash('success', 'Article added')
@@ -44,10 +44,10 @@ router.post('/add', (req, res) => {
 
 router.get('/edit/:id', ensureAuthenticated, (req, res) => {
 	Article.findById(req.params.id, (err, article) => {
-		if(err)
+		if (err)
 			console.log(err)
 		else
-			res.render('edit_article', {article: article})
+			res.render('edit_article', { article: article })
 	})
 })
 
@@ -56,9 +56,9 @@ router.post('/edit/:id', (req, res) => {
 	article.title = req.body.title
 	article.author = req.body.author
 	article.body = req.body.body
-	let query = {_id: req.params.id}
+	let query = { _id: req.params.id }
 	Article.update(query, article, (err) => {
-		if(err)
+		if (err)
 			console.log(err)
 		else {
 			req.flash('success', 'Article updated')
@@ -70,22 +70,22 @@ router.post('/edit/:id', (req, res) => {
 // Single Article Route
 router.get('/:id', (req, res) => {
 	Article.findById(req.params.id, (err, article) => {
-		if(err)
+		if (err)
 			console.log(err)
 		else
-			res.render('article', {article: article})
+			res.render('article', { article: article })
 	})
 })
 
 router.delete('/:id', (req, res) => {
 
-	if(!req.user._id) {
+	if (!req.user._id) {
 		res.status(500).send()
 	}
 
-	let query = {_id: req.params.id}
+	let query = { _id: req.params.id }
 	Article.remove(query, (err) => {
-		if(err)
+		if (err)
 			console.log(err)
 		else
 			res.send()
@@ -95,7 +95,7 @@ router.delete('/:id', (req, res) => {
 // Access Control
 
 function ensureAuthenticated(req, res, next) {
-	if(req.isAuthenticated()) {
+	if (req.isAuthenticated()) {
 		return next()
 	} else {
 		req.flash('danger', 'Please login to continue')

@@ -22,12 +22,12 @@ let db = mongoose.connection
 
 // Check connection
 db.once('open', () => {
-	console.log('Connected to MongoDB')
+  console.log('Connected to MongoDB')
 })
 
 // Check for DB error
 db.on('error', (err) => {
-	console.log(err)
+  console.log(err)
 })
 
 // Body-parser Middleware
@@ -36,9 +36,9 @@ app.use(bodyParser.json())
 
 // Express Session Middleware
 app.use(session({
-	secret: 'keyboard cat',
-	resave: true,
-	saveUninitialized: true,
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true,
 }))
 
 // Express Messsages Middleware
@@ -50,18 +50,18 @@ app.use(function (req, res, next) {
 
 // Express Validator Middleware
 app.use(expressValidator({
-  errorFormatter: function(param, msg, value) {
-      var namespace = param.split('.')
-      , root    = namespace.shift()
+  errorFormatter: function (param, msg, value) {
+    var namespace = param.split('.')
+      , root = namespace.shift()
       , formParam = root
 
-    while(namespace.length) {
+    while (namespace.length) {
       formParam += '[' + namespace.shift() + ']'
     }
     return {
-      param : formParam,
-      msg   : msg,
-      value : value
+      param: formParam,
+      msg: msg,
+      value: value
     }
   }
 }))
@@ -81,20 +81,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('*', (req, res, next) => {
-	res.locals.user = req.user || null
-	next()
+  res.locals.user = req.user || null
+  next()
 })
 
 // Home Route
-app.get('/' , (req, res) => {
-	let articles = Article.find({}, (err, articles) => {
-		if(err)
-			console.log(err)
-		else
-			res.render('index', {
-				articles: articles
-			})
-	})
+app.get('/', (req, res) => {
+  let articles = Article.find({}, (err, articles) => {
+    if (err)
+      console.log(err)
+    else
+      res.render('index', {
+        articles: articles
+      })
+  })
 })
 
 // Article Route Files

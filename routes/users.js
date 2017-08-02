@@ -28,7 +28,7 @@ router.post('/register', (req, res) => {
 
 	let errors = req.validationErrors()
 
-	if(errors) {
+	if (errors) {
 		res.render('register', {
 			errors: errors
 		})
@@ -41,16 +41,16 @@ router.post('/register', (req, res) => {
 		})
 
 		bcrypt.genSalt(10, (err, salt) => {
-			if(err) {
+			if (err) {
 				console.log(err)
 			} else {
 				bcrypt.hash(user.password, salt, (err, hash) => {
-					if(err) {
+					if (err) {
 						console.log(err)
 					} else {
 						user.password = hash
 						user.save((err) => {
-							if(err) {
+							if (err) {
 								console.log(err)
 							} else {
 								req.flash('success', 'You have registered successfully!')
